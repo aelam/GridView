@@ -8,25 +8,43 @@
 
 import Foundation
 
-public protocol GridItemData {
-    
-}
+//open protocol GridItemData {
+//    
+//}
 
-public class GridItem: NSObject {
-    var value: GridItemData
+open class GridItem: NSObject {
+    var value: Any
     var data: AnyObject?
     
-    public init(_ value: GridItemData) {
+    public init(_ value: Any) {
         self.value = value
         super.init()
     }
 }
 
 
-extension Double: GridItemData {
-    
+open class ComplexGridItem: GridItem {
+
+    public var cellClass: AnyClass = ComplexGridItemCell.self
+    public var cellNibName: String?
+    public var cellNibBundle: Bundle?
 }
 
-extension Int: GridItemData {
-    
+public protocol GridValue: class {
+    var data: AnyObject? { get }
+}
+
+public class SimpleGridValue: NSObject, GridValue {
+    public var data: AnyObject?
+}
+
+
+public protocol Bindable: NSObjectProtocol {
+    func bindViewModel(_ viewModel: Any)
+}
+
+public class ComplexGridItemCell: UICollectionViewCell, Bindable {
+    public func bindViewModel(_ viewModel: Any) {
+        
+    }
 }

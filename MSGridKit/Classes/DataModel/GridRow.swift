@@ -8,10 +8,10 @@
 
 import UIKit
 
-public class GridRow: NSObject {
+open class GridRow: NSObject {
     var items: [GridItem]?
     
-    public convenience init(_ values: [GridItemData]) {
+    public convenience init(_ values: [Any]) {
         var newItems = [GridItem]()
         
         for i in 0..<values.count {

@@ -14,6 +14,8 @@ public class GridViewRowCell: UITableViewCell, UICollectionViewDataSource, UICol
     
     public private(set) var collectionView: UICollectionView!
     
+//    private var registeredCellClasses = [String, AnyClass]()
+    
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setUp()
@@ -40,6 +42,7 @@ public class GridViewRowCell: UITableViewCell, UICollectionViewDataSource, UICol
         self.contentView.addSubview(collectionView!)
         collectionView.dataSource = self
         collectionView!.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        
         collectionView.register(GridItemCell.self, forCellWithReuseIdentifier: NSStringFromClass(GridItemCell.self))
         collectionView.backgroundColor = UIColor.white
         

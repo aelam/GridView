@@ -9,7 +9,7 @@
 import UIKit
 
 
-open class GridItemCell: UICollectionViewCell {
+open class GridItemCell: UICollectionViewCell, Bindable {
     
     public var textLabel: UILabel!
     
@@ -33,11 +33,22 @@ open class GridItemCell: UICollectionViewCell {
     }
     
     func setUp() {
-        self.textLabel = UILabel.init(frame: self.bounds)
+        self.textLabel = UILabel(frame: self.bounds)
+        self.textLabel.textAlignment = .center
         self.addSubview(self.textLabel)
         self.textLabel.text = "Hello"
     }
     
+    public func bindViewModel(_ viewModel: Any) {
+        if let data = viewModel as? Double {
+            self.textLabel.text = "\(data)"
+        } else if let data = viewModel as? Int {
+            self.textLabel.text = "\(data)"
+        } else if let data = viewModel as? GridItem {
+            self.textLabel.text = "\(data.value)"
+        }
+
+    }
     
 
 }

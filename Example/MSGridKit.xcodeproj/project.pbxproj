@@ -12,6 +12,8 @@
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
+		94D77B6F1F39F6AF00738ECE /* StockNameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D77B6E1F39F6AF00738ECE /* StockNameCell.swift */; };
+		94D77B721F39F6E300738ECE /* StockNameItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D77B711F39F6E300738ECE /* StockNameItem.swift */; };
 		DABEA32A25693D0928E4A5ED /* Pods_MSGridKit_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33AFC280CDE216D47F057399 /* Pods_MSGridKit_Tests.framework */; };
 		EB9DCAB6EEF414AF3D2DF8DA /* Pods_MSGridKit_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85A2E0604DCBECFC1789E8CD /* Pods_MSGridKit_Example.framework */; };
 /* End PBXBuildFile section */
@@ -43,6 +45,8 @@
 		7D896919E811E679DE848840 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		85A2E0604DCBECFC1789E8CD /* Pods_MSGridKit_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MSGridKit_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		89991CC908BA3E9B30C50013 /* Pods-MSGridKit_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MSGridKit_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-MSGridKit_Tests/Pods-MSGridKit_Tests.release.xcconfig"; sourceTree = "<group>"; };
+		94D77B6E1F39F6AF00738ECE /* StockNameCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StockNameCell.swift; sourceTree = "<group>"; };
+		94D77B711F39F6E300738ECE /* StockNameItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StockNameItem.swift; sourceTree = "<group>"; };
 		A76EF972AB74BFDA56007CB6 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		BAB9511A2C706A17A1A2AD56 /* Pods-MSGridKit_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MSGridKit_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-MSGridKit_Example/Pods-MSGridKit_Example.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -104,6 +108,7 @@
 			children = (
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
+				94D77B6C1F39F69100738ECE /* StockGrid */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
@@ -145,6 +150,31 @@
 				A76EF972AB74BFDA56007CB6 /* LICENSE */,
 			);
 			name = "Podspec Metadata";
+			sourceTree = "<group>";
+		};
+		94D77B6C1F39F69100738ECE /* StockGrid */ = {
+			isa = PBXGroup;
+			children = (
+				94D77B701F39F6D300738ECE /* Item */,
+				94D77B6D1F39F69100738ECE /* Cell */,
+			);
+			path = StockGrid;
+			sourceTree = "<group>";
+		};
+		94D77B6D1F39F69100738ECE /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				94D77B6E1F39F6AF00738ECE /* StockNameCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
+		94D77B701F39F6D300738ECE /* Item */ = {
+			isa = PBXGroup;
+			children = (
+				94D77B711F39F6E300738ECE /* StockNameItem.swift */,
+			);
+			path = Item;
 			sourceTree = "<group>";
 		};
 		E3AAB8416437B92AF9355DF2 /* Frameworks */ = {
@@ -358,7 +388,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94D77B6F1F39F6AF00738ECE /* StockNameCell.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
+				94D77B721F39F6E300738ECE /* StockNameItem.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

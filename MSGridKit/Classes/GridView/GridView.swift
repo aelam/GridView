@@ -109,6 +109,48 @@ open class GridView: UIView, UITableViewDelegate, UITableViewDataSource, UIColle
     }
     
     
+    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+
+        var item: GridItem?
+        
+        if let tableViewCell = collectionView.superview?.superview as? UITableViewCell {
+            if let rowIndexPath = tableView.indexPath(for: tableViewCell) {
+                if let gridRow = self.gridData?.dataSets?[rowIndexPath.section].rows?[rowIndexPath.row] {
+                    item = gridRow.items?[indexPath.item]
+                }
+            }
+            
+        } else if let tableViewHeader = collectionView.superview?.superview as? UITableViewHeaderFooterView {
+            
+            let headers = tableView.visibleSectionHeaders()
+            // TODO  cache 显示的header
+            var index = -1
+            
+            for i in 0..<headers!.count {
+                if tableViewHeader == headers![i] {
+                    index = i
+                    break
+                }
+            }
+            
+            if index > 0 {
+                let gridRow = self.gridData?.dataSets?[index].section
+                item = gridRow?.items?[indexPath.item]
+            }
+        }
+        
+        
+        
+        guard
+            let cell = cell as? Bindable,
+            let unwrappedItem = item else {
+                return
+        }
+
+        cell.bindViewModel(unwrappedItem)
+    }
+    
+    
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         let width = self.delegate?.gridView(self, widthForColumn: indexPath.item) ?? self.itemSize.width
@@ -157,4 +199,25 @@ open class GridView: UIView, UITableViewDelegate, UITableViewDataSource, UIColle
         return false
     }
 
+}
+
+
+extension UITableView {
+    func visibleSectionHeaders() -> [UITableViewHeaderFooterView]? {
+        let numberOfSections = self.numberOfSections
+        let visibleRect = self.bounds
+        
+        var headers = [UITableViewHeaderFooterView]()
+        
+        for i in 0..<numberOfSections {
+            let sectionRect = self.rect(forSection: i)
+            if visibleRect.intersects(sectionRect) {
+                if let header = self.headerView(forSection: i) {
+                    headers.append(header)
+                }
+            }
+        }
+
+        return headers
+    }
 }

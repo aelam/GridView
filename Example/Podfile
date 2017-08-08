@@ -3,6 +3,7 @@ use_frameworks!
 
 target 'MSGridKit_Example' do
   pod 'MSGridKit', :path => '../'
+  pod 'SnapKit'
 
   target 'MSGridKit_Tests' do
     inherit! :search_paths

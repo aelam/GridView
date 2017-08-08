@@ -2,9 +2,11 @@ PODS:
   - CSStickyHeaderFlowLayout (0.2.11)
   - MSGridKit (0.1.0):
     - CSStickyHeaderFlowLayout
+  - SnapKit (3.2.0)
 
 DEPENDENCIES:
   - MSGridKit (from `../`)
+  - SnapKit
 
 EXTERNAL SOURCES:
   MSGridKit:
@@ -13,7 +15,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   CSStickyHeaderFlowLayout: e9bcb1762413f49d7d09e5bd0ae5efd1100116b7
   MSGridKit: d15c8a43561d3c5ee5abf191d19862057d2aa8e9
+  SnapKit: 1ca44df72cfa543218d177cb8aab029d10d86ea7
 
-PODFILE CHECKSUM: 9060ebd4503f35c8cf0f09dec48704f6939a0031
+PODFILE CHECKSUM: bcb18b844cf320193840266e812f113c590dcf65
 
 COCOAPODS: 1.2.1
