@@ -37,5 +37,7 @@ open class GridItemCell: UICollectionViewCell {
         self.addSubview(self.textLabel)
         self.textLabel.text = "Hello"
     }
+    
+    
 
 }

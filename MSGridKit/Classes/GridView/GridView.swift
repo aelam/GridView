@@ -30,6 +30,9 @@ open class GridView: UIView, UITableViewDelegate, UITableViewDataSource, UIColle
     
     public var gridData: GridData?
     private var contentOffsetX: CGFloat = 0;
+    public var itemSize = CGSize(width: 100, height: 40)
+    
+    private var headerCollectionViews = Set<UICollectionView>()
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -78,6 +81,10 @@ open class GridView: UIView, UITableViewDelegate, UITableViewDataSource, UIColle
     public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView: GridViewRowHeaderView = self.tableView.dequeueReusableHeaderFooterView(withIdentifier: NSStringFromClass(GridViewRowHeaderView.self)) as! GridViewRowHeaderView
         headerView.gridRow = self.gridData?.dataSets?[section].section
+        
+        headerView.collectionView.contentOffset = CGPoint(x: contentOffsetX, y: 0)
+        headerView.collectionView.delegate = self
+
         return headerView
     }
 
@@ -91,6 +98,7 @@ open class GridView: UIView, UITableViewDelegate, UITableViewDataSource, UIColle
         let cell = view as! GridViewRowHeaderView
         cell.collectionView.contentOffset = CGPoint(x: contentOffsetX, y: 0)
         cell.collectionView.delegate = self
+        
     }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -100,8 +108,13 @@ open class GridView: UIView, UITableViewDelegate, UITableViewDataSource, UIColle
         }
     }
     
+    
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 100, height: 40)
+        
+        let width = self.delegate?.gridView(self, widthForColumn: indexPath.item) ?? self.itemSize.width
+        let height = self.delegate?.gridView(self, heightForRow: indexPath.section) ?? self.itemSize.height
+            
+        return CGSize(width: width, height: height)
     }
     
     func scrollCells() {
@@ -121,6 +134,27 @@ open class GridView: UIView, UITableViewDelegate, UITableViewDataSource, UIColle
                 cell.collectionView.contentOffset = CGPoint(x: contentOffsetX, y: 0)
             }
         }
+    }
+    
+    internal func isCollectionViewInHeaderView(_ collectionView: UICollectionView) -> Bool {
+        
+        if headerCollectionViews.contains(collectionView) {
+            return true
+        }
+
+        var superview = collectionView.superview
+        while superview != nil {
+            if superview is UITableViewCell {
+                return false
+            } else if superview is UITableViewHeaderFooterView {
+                headerCollectionViews.insert(collectionView)
+                return true
+            } else {
+                superview = superview?.superview
+            }
+        }
+        
+        return false
     }
 
 }
