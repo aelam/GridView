@@ -8,6 +8,6 @@
 
 import Foundation
 
-class GridSection: GridRow {
+public class GridSection: GridRow {
     
 }

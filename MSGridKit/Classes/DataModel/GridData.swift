@@ -6,8 +6,15 @@
 //
 //
 
-import UIKit
+import Foundation
 
 public class GridData: NSObject {
-    var dataSet: [GridDataSet]?
+    
+    var dataSets: [GridDataSet]?
+
+    public init(_ dataSets: [GridDataSet]?) {
+        super.init()
+        self.dataSets = dataSets
+    }
+    
 }

@@ -12,7 +12,7 @@ public protocol GridViewDataSource: class {
     func gridView(_ gridView: GridView, numberOfRowsInSection section: Int) -> Int
     func numberOfSections(in gridView: GridView) -> Int
     func numberOfColumns(_ gridView: GridView) -> Int
-    func gridView(_ gridView: GridView, cellForItemAt indexPath: IndexPath) -> GridItemCell
+    func gridView(_ gridView: GridView, cellForItemAt section: Int, indexPath: IndexPath) -> GridItemCell
 }
 
 
