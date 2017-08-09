@@ -17,4 +17,9 @@ public class GridData: NSObject {
         self.dataSets = dataSets
     }
     
+    
+    subscript(_ section: Int , row: Int, column: Int) -> GridItem? {
+        return self.dataSets?[section].rows?[row][column]
+    }
+    
 }

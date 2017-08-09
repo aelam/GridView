@@ -21,18 +21,19 @@ open class GridView: UIView, UITableViewDelegate, UITableViewDataSource, UIColle
     open private(set) var tableView: UITableView!
 
     open var delegate: GridViewDelegate?
-    open var dataSource: GridViewDataSource? {
-        didSet {
-            _cacheValue.columnCount = self.dataSource?.numberOfColumns(self) ?? 0
-            _cacheValue.numberOfSections = self.dataSource?.numberOfSections(in: self) ?? 1
-        }
-    }
+//    open var dataSource: GridViewDataSource? {
+//        didSet {
+//            _cacheValue.columnCount = self.dataSource?.numberOfColumns(self) ?? 0
+//            _cacheValue.numberOfSections = self.dataSource?.numberOfSections(in: self) ?? 1
+//        }
+//    }
     
     public var gridData: GridData?
     private var contentOffsetX: CGFloat = 0;
     public var itemSize = CGSize(width: 100, height: 40)
     
     private var headerCollectionViews = Set<UICollectionView>()
+    private var displayingHeaderMap = Dictionary<UICollectionView,Int>()
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -44,7 +45,7 @@ open class GridView: UIView, UITableViewDelegate, UITableViewDataSource, UIColle
         setUp()
     }
 
-    func setUp() {
+    private func setUp() {
         
         self.tableView = UITableView(frame: self.bounds)
         self.addSubview(self.tableView)
@@ -54,10 +55,15 @@ open class GridView: UIView, UITableViewDelegate, UITableViewDataSource, UIColle
         registerDefaultCells()
     }
     
-    func registerDefaultCells() {
+    private func registerDefaultCells() {
         self.tableView.register(GridViewRowHeaderView.self, forHeaderFooterViewReuseIdentifier: NSStringFromClass(GridViewRowHeaderView.self))
         self.tableView.register(GridViewRowCell.self, forCellReuseIdentifier: NSStringFromClass(GridViewRowCell.self))
     }
+    
+    public func reloadData() {
+        self.tableView.reloadData()
+    }
+    
     
     //MARK: - - UITableViewDataSource
     public func numberOfSections(in tableView: UITableView) -> Int {
@@ -70,7 +76,16 @@ open class GridView: UIView, UITableViewDelegate, UITableViewDataSource, UIColle
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = self.tableView.dequeueReusableCell(withIdentifier: NSStringFromClass(GridViewRowCell.self), for: indexPath) as! GridViewRowCell
-        cell.gridRow = self.gridData?.dataSets?[indexPath.section].rows?[indexPath.row] 
+        cell.gridRow = self.gridData?.dataSets?[indexPath.section].rows?[indexPath.row]
+        
+//        let cell = cell as! GridViewRowCell
+        cell.collectionView.contentOffset = CGPoint(x: contentOffsetX, y: 0)
+        cell.collectionView.delegate = self
+//        let indexPathsForVisibleItems = cell.collectionView.indexPathsForVisibleItems
+//        if indexPathsForVisibleItems.count > 0 {
+//            cell.collectionView.reloadItems(at: indexPathsForVisibleItems)
+//        }
+
         return cell
     }
     
@@ -81,64 +96,86 @@ open class GridView: UIView, UITableViewDelegate, UITableViewDataSource, UIColle
     public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView: GridViewRowHeaderView = self.tableView.dequeueReusableHeaderFooterView(withIdentifier: NSStringFromClass(GridViewRowHeaderView.self)) as! GridViewRowHeaderView
         headerView.gridRow = self.gridData?.dataSets?[section].section
-        
-        headerView.collectionView.contentOffset = CGPoint(x: contentOffsetX, y: 0)
-        headerView.collectionView.delegate = self
 
         return headerView
     }
 
-    public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let cell = cell as! GridViewRowCell
-        cell.collectionView.contentOffset = CGPoint(x: contentOffsetX, y: 0)
-        cell.collectionView.delegate = self
+    public func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        
+        let headerView = view as! GridViewRowHeaderView
+
+        
+        displayingHeaderMap[headerView.collectionView] = section
+        
+        headerView.collectionView.contentOffset = CGPoint(x: contentOffsetX, y: 0)
+        headerView.collectionView.delegate = self
+        
+        let indexPathsForVisibleItems = headerView.collectionView.indexPathsForVisibleItems
+        if indexPathsForVisibleItems.count > 0 {
+            headerView.collectionView.reloadItems(at: indexPathsForVisibleItems)
+        }
+        
+        self.delegate?.gridView(self, willDisplayHeaderView: view, forSection: section)
+        
     }
     
-    public func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        let cell = view as! GridViewRowHeaderView
+    public func tableView(_ tableView: UITableView, didEndDisplayingHeaderView view: UIView, forSection section: Int) {
+        let header = view as! GridViewRowHeaderView
+        displayingHeaderMap.removeValue(forKey: header.collectionView)
+    }
+
+
+    
+    public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+        let cell = cell as! GridViewRowCell
+        cell.collectionView.reloadData()
         cell.collectionView.contentOffset = CGPoint(x: contentOffsetX, y: 0)
         cell.collectionView.delegate = self
         
+        print("indexPath.section: ", indexPath.row)
+//        let indexPathsForVisibleItems = cell.collectionView.indexPathsForVisibleItems
+//        if indexPathsForVisibleItems.count > 0 {
+//            cell.collectionView.reloadItems(at: indexPathsForVisibleItems)
+//        }
+//
+        
+        self.delegate?.gridView(self, willDisplay: cell, forRowAt: indexPath)
+        
+    }
+    
+    public func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
     }
 
+    
+    
+
+    ///MARK - - UIScrollViewDelegate
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView is UICollectionView {
             contentOffsetX = scrollView.contentOffset.x
-            scrollCells()
+            adjustItemCellsContentOffsetX()
         }
     }
     
     
+    //
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
 
         var item: GridItem?
         
-        if let tableViewCell = collectionView.superview?.superview as? UITableViewCell {
+        if let index = displayingHeaderMap[collectionView] as? Int {
+            let gridRow = self.gridData?.dataSets?[index].section
+            item = gridRow?.items?[indexPath.item]
+
+        } else if let tableViewCell = collectionView.superview?.superview as? UITableViewCell {
             if let rowIndexPath = tableView.indexPath(for: tableViewCell) {
                 if let gridRow = self.gridData?.dataSets?[rowIndexPath.section].rows?[rowIndexPath.row] {
                     item = gridRow.items?[indexPath.item]
                 }
             }
             
-        } else if let tableViewHeader = collectionView.superview?.superview as? UITableViewHeaderFooterView {
-            
-            let headers = tableView.visibleSectionHeaders()
-            // TODO  cache 显示的header
-            var index = -1
-            
-            for i in 0..<headers!.count {
-                if tableViewHeader == headers![i] {
-                    index = i
-                    break
-                }
-            }
-            
-            if index > 0 {
-                let gridRow = self.gridData?.dataSets?[index].section
-                item = gridRow?.items?[indexPath.item]
-            }
         }
-        
         
         
         guard
@@ -159,7 +196,8 @@ open class GridView: UIView, UITableViewDelegate, UITableViewDataSource, UIColle
         return CGSize(width: width, height: height)
     }
     
-    func scrollCells() {
+    
+    func adjustItemCellsContentOffsetX() {
     
         let numberOfSections = tableView.numberOfSections
         let visibleRect = self.tableView.bounds;

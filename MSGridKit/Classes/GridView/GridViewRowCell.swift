@@ -10,7 +10,11 @@ import UIKit
 
 public class GridViewRowCell: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
 
-    public var gridRow: GridRow?
+    public var gridRow: GridRow? {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
     
     public private(set) var collectionView: UICollectionView!
     
@@ -35,7 +39,7 @@ public class GridViewRowCell: UITableViewCell, UICollectionViewDataSource, UICol
     }
 
     func setUp() {
-        let flowLayout = UICollectionViewFlowLayout()
+        let flowLayout = StickyFlowLayout()
         flowLayout.scrollDirection = .horizontal
         flowLayout.itemSize = CGSize(width: 30, height: 30)
         collectionView = UICollectionView(frame: self.bounds, collectionViewLayout: flowLayout)
@@ -54,7 +58,17 @@ public class GridViewRowCell: UITableViewCell, UICollectionViewDataSource, UICol
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        return collectionView.dequeueReusableCell(withReuseIdentifier: NSStringFromClass(GridItemCell.self), for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NSStringFromClass(GridItemCell.self), for: indexPath)
+        
+        if
+            let item = gridRow?.items?[indexPath.item],
+            let bindableCell = cell as? Bindable
+        {
+            bindableCell.bindViewModel(item)
+        }
+        
+        
+        return cell
     }
     
 

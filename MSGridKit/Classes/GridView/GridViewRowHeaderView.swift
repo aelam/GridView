@@ -10,7 +10,11 @@ import UIKit
 
 open class GridViewRowHeaderView: UITableViewHeaderFooterView, UICollectionViewDataSource {
     
-    open var gridRow: GridSection?
+    open var gridRow: GridSection? {
+        didSet {
+            self.collectionView.reloadData()
+        }
+    }
     
     var collectionView: UICollectionView!
    

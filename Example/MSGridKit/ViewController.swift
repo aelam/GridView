@@ -9,7 +9,7 @@
 import UIKit
 import MSGridKit
 
-class ViewController: UIViewController, GridViewDelegate, GridViewDataSource {
+class ViewController: UIViewController, GridViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,7 +17,6 @@ class ViewController: UIViewController, GridViewDelegate, GridViewDataSource {
         let gridView = GridView(frame: self.view.bounds)
         self.view.addSubview(gridView)
         gridView.delegate = self
-        gridView.dataSource = self
         
         let gridData = buildData()
         
@@ -30,7 +29,7 @@ class ViewController: UIViewController, GridViewDelegate, GridViewDataSource {
         let gridSection = GridSection([1,2,3,4,5,6, 1,2,3,4,5,6, 1,2,3,4,5,6])
         var gridRows = [GridRow]()
         
-        for _ in 0..<50 {
+        for _ in 0..<1 {
             gridRows.append(GridRow([1,2,3,4,5,6, 1,2,3,4,5,6, 1,2,3,4,5,6]))
         }
         
@@ -56,24 +55,27 @@ class ViewController: UIViewController, GridViewDelegate, GridViewDataSource {
     func gridView(_ gridView: GridView, widthForColumn column: Int) -> CGFloat {
         return 100
     }
-    
-    func numberOfSections(in gridView: GridView) -> Int {
-        return 1
+
+    func gridView(_ gridView: GridView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) // IndexPath{section, row} 
+    {
+        
     }
     
-    func gridView(_ gridView: GridView, numberOfRowsInSection section: Int) -> Int {
-        return 100
+    
+    func gridView(_ gridView: GridView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        
     }
     
-    func numberOfColumns(_ gridView: GridView) -> Int {
-        return 20
+    func gridView(_ gridView: GridView, willDisplay itemCell: UICollectionViewCell, forSection section: Int, indexPath: IndexPath)  // IndexPath{row, item} 
+    {
+        
     }
     
-    func gridView(_ gridView: GridView, cellForItemAt section: Int, indexPath: IndexPath) -> GridItemCell {
-        print(section, indexPath)
-        return GridItemCell()
-        //gridView.dequeueReusableCell(withIdentifier: NSStringFromClass(GridItemCell.self), for: section, indexPath: indexPath)
-    }
+    
+    
+
+    
+    
 
     func frozenColumns(_ gridView: GridView) -> Int {
         return 2
